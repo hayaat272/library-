@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="so" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaktabadaHiigsi - Nidaamka Casriga ah ee Maamulka Maktabadda</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Chart.js CDN for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm">
+    <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Mobile Toggle -->
+      <div class="flex items-center space-x-3">
+        <button id="mobileMenuToggle" class="lg:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('dashboard')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent">MaktabadPro</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase bg-primary-100 text-primary-700 dark:bg-primary-950/60 dark:text-primary-300">v2.5</span>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-400 hidden sm:block" data-i18n="app_subtitle">Nidaamka Casriga ah ee Maamulka Maktabadda</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Global Search -->
+      <div class="flex-1 max-w-md hidden md:block">
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </span>
+          <input type="text" id="globalSearchInput" data-i18n-placeholder="search_placeholder" placeholder="Raadi buug, qoraa, ISBN, ama xubin..." class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-white transition">
+        </div>
+      </div>
+
+      <!-- Action Tools (Language, Dark Mode, Quick Issue, Profile) -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Language Switcher (🇸🇴 Somali / 🇬🇧 English) -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-1 border border-slate-200 dark:border-slate-700">
+          <button id="lang-btn-so" onclick="setLanguage('so')" class="px-2.5 py-1 text-xs font-bold rounded-lg transition" title="Af-Soomaali">
+            🇸🇴 SO
+          </button>
+          <button id="lang-btn-en" onclick="setLanguage('en')" class="px-2.5 py-1 text-xs font-bold rounded-lg transition" title="English">
+            🇬🇧 EN
+          </button>
+        </div>
+
+        <!-- Theme Toggle (Dark / Light) -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Beddel Habka Muuqaalka (Dark/Light)">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+
+        <!-- Quick Issue Button -->
+        <button onclick="openIssueModal()" class="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-md shadow-primary-500/25 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span data-i18n="quick_issue">Amaahi Buug</span>
+        </button>
+
+        <!-- Librarian Avatar / Profile -->
+        <div class="flex items-center space-x-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+            MP
+          </div>
+          <div class="hidden xl:block text-left text-xs">
+            <div class="font-bold text-slate-800 dark:text-slate-200" data-i18n="librarian">Maamulaha Maktabadda</div>
+            <div class="text-[10px] text-emerald-500 font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Body Content: Sidebar + Main Views -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white dark:bg-slate-850 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between fixed lg:static inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out pt-16 lg:pt-0">
+      
+      <div class="p-4 space-y-1.5 overflow-y-auto">
+        <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          MAAMULKA GUUD
+        </div>
+
+        <a href="#" data-view="dashboard" class="nav-link active-nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <span data-i18n="nav_dashboard">Dulmar Guud</span>
+        </a>
+
+        <a href="#" data-view="books" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          <span data-i18n="nav_books">Buugaagta</span>
+        </a>
+
+        <a href="#" data-view="members" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <span data-i18n="nav_members">Xubnaha & Ardayda</span>
+        </a>
+
+        <a href="#" data-view="circulation" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+          <span data-i18n="nav_circulation">Amaahinta & Soo Celinta</span>
+        </a>
+
+        <div class="pt-4 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          KHARASHAADKA & XOGTA
+        </div>
+
+        <a href="#" data-view="fines" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span data-i18n="nav_fines">Ganaaxyada & Kharashka</span>
+        </a>
+
+        <a href="#" data-view="reservations" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+          <span data-i18n="nav_reservations">Boos-qabsashada</span>
+        </a>
+
+        <a href="#" data-view="reports" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          <span data-i18n="nav_reports">Warbixinnada & Tirakoobka</span>
+        </a>
+
+        <a href="#" data-view="settings" class="nav-link flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span data-i18n="nav_settings">Hagaajinta & Keydka</span>
+        </a>
+      </div>
+
+      <!-- Footer Badge -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="bg-gradient-to-r from-primary-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800/60 p-3 rounded-xl border border-primary-100/60 dark:border-slate-700">
+          <div class="flex items-center space-x-2 text-primary-700 dark:text-primary-300 font-semibold text-xs">
+            <span>💾 Keydka LocalStorage</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Xogtaadu si toos ah ayay browser-kaaga ugu kaydsan tahay.</p>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: DASHBOARD                          -->
+      <!-- ========================================== -->
+      <section id="view-dashboard" class="view-section space-y-6">
+        
+        <!-- Welcome banner -->
+        <div class="bg-gradient-to-r from-primary-600 via-primary-700 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+          <div class="relative z-10 max-w-2xl">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Kusoo Dhawaaw MaktabadPro! 📖</h1>
+            <p class="mt-2 text-primary-100 text-sm sm:text-base leading-relaxed">
+              Nidaam buuxa oo si fudud kuu siinaya maaraynta buugaagta, ardayda, amaahinta, diiwaangelinta ganaaxyada iyo warbixinnada maalinlaha ah.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button onclick="openIssueModal()" class="px-4 py-2 bg-white text-primary-700 font-bold rounded-xl text-xs sm:text-sm hover:bg-primary-50 transition shadow">
+                + Amaahi Buug Hadda
+              </button>
+              <button onclick="openAddBookModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl text-xs sm:text-sm backdrop-blur-sm transition border border-white/20">
+                + Kudar Buug Cusub
+              </button>
+            </div>
+          </div>
+          <!-- Decorative circles -->
+          <div class="absolute -right-12 -bottom-12 w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
+          <div class="absolute right-24 -top-12 w-48 h-48 rounded-full bg-white/5 pointer-events-none"></div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_total_books">Wadarta Buugaagta</span>
+              <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600">📚</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white" id="statTotalBooks">0</div>
+            <div class="mt-1 text-[11px] text-emerald-600 font-medium">Koobiyada oo dhan</div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_available_books">Diyaar ah</span>
+              <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600">✅</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-emerald-600" id="statAvailableBooks">0</div>
+            <div class="mt-1 text-[11px] text-slate-400">Khaanadaha ku jira</div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_borrowed_books">La amaahday</span>
+              <div class="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600">🔄</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-amber-600" id="statBorrowedBooks">0</div>
+            <div class="mt-1 text-[11px] text-slate-400">Gacanta ardayda</div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_overdue_books">Wakhtigu Dhaafay</span>
+              <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600">⚠️</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-rose-600" id="statOverdueBooks">0</div>
+            <div class="mt-1 text-[11px] text-rose-600 font-medium">U baahan soo celin</div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_total_members">Wadarta Xubnaha</span>
+              <div class="p-2 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600">👥</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white" id="statTotalMembers">0</div>
+            <div class="mt-1 text-[11px] text-purple-600 font-medium">Arday & Macallimiin</div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between text-slate-400">
+              <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="stat_pending_fines">Ganaaxyada</span>
+              <div class="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600">💰</div>
+            </div>
+            <div class="mt-2 text-2xl font-extrabold text-red-600" id="statPendingFines">$0.00</div>
+            <div class="mt-1 text-[11px] text-slate-400">Aan weli la qaban</div>
+          </div>
+
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Monthly Trends Line Chart -->
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="chart_borrowing_trends">Dhaqdhaqaaqa Amaahinta Buugaagta (Bil kasta)</h3>
+                <p class="text-xs text-slate-400">Tirada buugaagta la qaatay 6-dii bilood ee ugu dambeysay</p>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 font-semibold">+24% Koror</span>
+            </div>
+            <div class="h-64 relative">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Category Doughnut Chart -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="mb-4">
+              <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="chart_category_dist">Qaybaha Buugaagta Maktabadda</h3>
+              <p class="text-xs text-slate-400">Kala qaybsanaanta buugaagta qayb kasta</p>
+            </div>
+            <div class="h-64 relative flex items-center justify-center">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lower Section: Urgent Overdue Items & Recent Circulation -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Urgent Overdue Table -->
+          <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                  <span data-i18n="urgent_overdue">Buugaagta Wakhtigoodu Dhaafay (Degdeg)</span>
+                </h3>
+                <p class="text-xs text-slate-400">Buugaagta la qaatay ee dib u dhacay lana doonayo in la soo celiyo</p>
+              </div>
+              <button onclick="navigateTo('circulation')" class="text-xs text-primary-600 font-semibold hover:underline" data-i18n="view_all">Eeg Dhammaan</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="text-slate-400 border-b border-slate-100 dark:border-slate-700 uppercase">
+                  <tr>
+                    <th class="px-4 py-2.5">Buugga</th>
+                    <th class="px-4 py-2.5">Xubinta</th>
+                    <th class="px-4 py-2.5">Taariikhdii</th>
+                    <th class="px-4 py-2.5">Xaaladda</th>
+                    <th class="px-4 py-2.5 text-right">Ficil</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardUrgentTable" class="divide-y divide-slate-100 dark:divide-slate-700">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Activity Feed -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <div class="mb-4">
+              <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="recent_activity">Dhaqdhaqaaqyadii Ugu Dambeeyay</h3>
+              <p class="text-xs text-slate-400">Amaahintii iyo soo celintii u dambaysay</p>
+            </div>
+            <div id="dashboardActivityFeed" class="space-y-3">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: BOOKS CATALOG                      -->
+      <!-- ========================================== -->
+      <section id="view-books" class="view-section hidden space-y-6">
+        
+        <!-- Header & Action Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="books_title">Buugaagta Maktabadda</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="books_subtitle">Maamul buugaagta, koobiyada, qorayaasha, iyo khaanadaha</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="db.exportToCSV('books')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1.5">
+              <span>📥</span>
+              <span data-i18n="export_books">Dhoofi Buugaagta</span>
+            </button>
+            <button onclick="openAddBookModal()" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center space-x-1.5">
+              <span>+</span>
+              <span data-i18n="add_book_btn">Kudar Buug Cusub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+          <div class="flex-1 w-full md:max-w-md relative">
+            <input type="text" id="bookSearchInput" placeholder="Raadi cinwaan, qoraa, ISBN..." class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-white">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">🔍</span>
+          </div>
+
+          <div class="flex items-center space-x-2 w-full md:w-auto">
+            <select id="bookCategoryFilter" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+              <option value="" data-i18n="filter_all_categories">Dhammaan Qaybaha</option>
+              <option value="Computer Science & IT">Computer Science & IT</option>
+              <option value="Somali History & Literature">Somali History & Literature</option>
+              <option value="Islamic Studies">Islamic Studies</option>
+              <option value="Business & Economics">Business & Economics</option>
+              <option value="Science & Engineering">Science & Engineering</option>
+              <option value="Mathematics & Statistics">Mathematics & Statistics</option>
+            </select>
+
+            <select id="bookStatusFilter" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+              <option value="" data-i18n="filter_all_status">Dhammaan Xaaladaha</option>
+              <option value="available" data-i18n="status_available">Diyaar ah</option>
+              <option value="borrowed" data-i18n="status_borrowed">Waa la qaatay</option>
+            </select>
+
+            <!-- Grid vs Table Switch -->
+            <div class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+              <button id="bookViewGridBtn" onclick="setBookViewMode('grid')" class="p-1.5 rounded-lg bg-white dark:bg-slate-700 shadow text-slate-700 dark:text-slate-200" title="Kaarar">
+                ⊞
+              </button>
+              <button id="bookViewTableBtn" onclick="setBookViewMode('table')" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-white" title="Shax">
+                ☰
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Books Output Container (Grid or Table) -->
+        <div id="booksContainer">
+          <!-- Populated dynamically -->
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: MEMBERS & PATRONS                  -->
+      <!-- ========================================== -->
+      <section id="view-members" class="view-section hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="members_title">Xubnaha & Ardayda</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="members_subtitle">Maamul ardayda, macallimiinta, iyo akhristayaasha maktabadda</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="db.exportToCSV('members')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1.5">
+              <span>📥</span>
+              <span data-i18n="export_members">Dhoofi Xubnaha</span>
+            </button>
+            <button onclick="openAddMemberModal()" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center space-x-1.5">
+              <span>+</span>
+              <span data-i18n="add_member_btn">Kudar Xubin Cusub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div class="flex-1 w-full max-w-md relative">
+            <input type="text" id="memberSearchInput" placeholder="Raadi magaca, ID card-ka, email..." class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-primary-500 text-slate-900 dark:text-white">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">🔍</span>
+          </div>
+          <div>
+            <select id="memberTypeFilter" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+              <option value="">Dhammaan Noocyada</option>
+              <option value="student">Ardayda (Students)</option>
+              <option value="faculty">Macallimiinta (Faculty)</option>
+              <option value="public">Dadweynaha (Public)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Members Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4" data-i18n="col_member_name">Magaca & ID-ga</th>
+                <th class="px-6 py-4" data-i18n="col_member_contact">Xiriirka</th>
+                <th class="px-6 py-4" data-i18n="col_member_type">Nooca</th>
+                <th class="px-6 py-4 text-center" data-i18n="col_borrowed_count">Buugaagta uu Haysto</th>
+                <th class="px-6 py-4" data-i18n="col_member_status">Xaaladda</th>
+                <th class="px-6 py-4 text-right" data-i18n="col_actions">Ficillo</th>
+              </tr>
+            </thead>
+            <tbody id="membersTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 4: CIRCULATION & LOANS                -->
+      <!-- ========================================== -->
+      <section id="view-circulation" class="view-section hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="circulation_title">Amaahinta & Soo Celinta Buugaagta</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="circulation_subtitle">Diiwaangeli buugaagta la bixinayo iyo kuwa la soo celinayo</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="db.exportToCSV('loans')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1.5">
+              <span>📥</span>
+              <span>Dhoofi Amaahda (CSV)</span>
+            </button>
+            <button onclick="openIssueModal()" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center space-x-1.5">
+              <span>+</span>
+              <span data-i18n="issue_new_book_btn">Amaahi Buug Cusub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs for Circulation -->
+        <div class="border-b border-slate-200 dark:border-slate-700 flex space-x-6 text-sm font-semibold">
+          <button id="circTabActiveBtn" onclick="switchCirculationTab('active')" class="py-3 border-b-2 border-primary-600 text-primary-600 dark:text-primary-400 transition" data-i18n="tab_active_loans">
+            Buugaagta Gacanta ku Jira (Active)
+          </button>
+          <button id="circTabHistoryBtn" onclick="switchCirculationTab('history')" class="py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition" data-i18n="tab_loan_history">
+            Taariikhda Soo Celinta (History)
+          </button>
+        </div>
+
+        <!-- Active Loans Table -->
+        <div id="circActiveTable" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4" data-i18n="col_loan_id">ID</th>
+                <th class="px-6 py-4" data-i18n="col_loan_book">Buugga</th>
+                <th class="px-6 py-4" data-i18n="col_loan_member">Xubinta Qaadatay</th>
+                <th class="px-6 py-4" data-i18n="col_loan_issue_date">Taariikhda Qaadashada</th>
+                <th class="px-6 py-4" data-i18n="col_loan_due_date">Taariikhda Soo Celinta</th>
+                <th class="px-6 py-4" data-i18n="col_loan_status">Xaaladda / Wakhtiga</th>
+                <th class="px-6 py-4 text-right" data-i18n="col_actions">Ficillo</th>
+              </tr>
+            </thead>
+            <tbody id="circActiveTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- History Loans Table -->
+        <div id="circHistoryTable" class="hidden bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4">ID</th>
+                <th class="px-6 py-4">Buugga</th>
+                <th class="px-6 py-4">Xubinta</th>
+                <th class="px-6 py-4">Taariikhda Qaadashada</th>
+                <th class="px-6 py-4">Taariikhda La Soo Celiyay</th>
+                <th class="px-6 py-4">Xaaladda</th>
+              </tr>
+            </thead>
+            <tbody id="circHistoryTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 5: FINES & BILLING                    -->
+      <!-- ========================================== -->
+      <section id="view-fines" class="view-section hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="fines_title">Ganaaxyada & Kharashka</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="fines_subtitle">Maamulka ganaaxyada buugaagta soo daahay ama waxyeeloobay</p>
+          </div>
+          <div>
+            <button onclick="db.exportToCSV('fines')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1.5">
+              <span>📥</span>
+              <span>Dhoofi Ganaaxyada (CSV)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fine Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <span class="text-xs uppercase font-bold text-slate-400" data-i18n="stat_total_fines">Wadarta Ganaaxyada</span>
+            <div class="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white" id="finesTotalStat">$0.00</div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <span class="text-xs uppercase font-bold text-slate-400" data-i18n="stat_collected_fines">Ganaaxyada La Qabtay</span>
+            <div class="mt-2 text-2xl font-extrabold text-emerald-600" id="finesCollectedStat">$0.00</div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+            <span class="text-xs uppercase font-bold text-slate-400" data-i18n="stat_unpaid_fines">Ganaaxyada Dhiman</span>
+            <div class="mt-2 text-2xl font-extrabold text-rose-600" id="finesUnpaidStat">$0.00</div>
+          </div>
+        </div>
+
+        <!-- Fines Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4" data-i18n="col_fine_id">ID</th>
+                <th class="px-6 py-4" data-i18n="col_fine_member">Xubinta</th>
+                <th class="px-6 py-4" data-i18n="col_fine_book">Buugga</th>
+                <th class="px-6 py-4" data-i18n="col_fine_amount">Lacagta</th>
+                <th class="px-6 py-4" data-i18n="col_fine_reason">Sababta</th>
+                <th class="px-6 py-4" data-i18n="col_fine_status">Xaaladda</th>
+                <th class="px-6 py-4 text-right" data-i18n="col_actions">Ficil</th>
+              </tr>
+            </thead>
+            <tbody id="finesTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 6: RESERVATIONS                       -->
+      <!-- ========================================== -->
+      <section id="view-reservations" class="view-section hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="reservations_title">Boos-qabsashada Buugaagta</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="reservations_subtitle">Dalabaadka buugaagta hadda la wada qaatay</p>
+          </div>
+          <div>
+            <button onclick="openAddReservationModal()" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center space-x-1.5">
+              <span>+</span>
+              <span data-i18n="new_reservation_btn">Qabso Buug Cusub</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-x-auto shadow-sm">
+          <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200/80 dark:border-slate-700">
+              <tr>
+                <th class="px-6 py-4">ID</th>
+                <th class="px-6 py-4" data-i18n="col_res_book">Buugga</th>
+                <th class="px-6 py-4" data-i18n="col_res_member">Xubinta</th>
+                <th class="px-6 py-4" data-i18n="col_res_date">Taariikhda</th>
+                <th class="px-6 py-4" data-i18n="col_res_priority">Saf-ka</th>
+                <th class="px-6 py-4" data-i18n="col_res_status">Xaaladda</th>
+              </tr>
+            </thead>
+            <tbody id="reservationsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 7: REPORTS & ANALYTICS                -->
+      <!-- ========================================== -->
+      <section id="view-reports" class="view-section hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="reports_title">Warbixinnada & Tirakoobka</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="reports_subtitle">Warbixin dhammaystiran oo ku saabsan dhammaan qaybaha maktabadda</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="window.print()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition flex items-center space-x-1.5">
+              <span>🖨️</span>
+              <span data-i18n="btn_print_report">Daabac Warbixinta (Print/PDF)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+            <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>📚</span> <span data-i18n="report_inventory_summary">Xaaladda Buugaagta (Kaydka)</span>
+            </h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Cinwaannada Gaarka ah:</span>
+                <span class="font-bold" id="repTotalBooks">0</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Wadarta Koobiyada:</span>
+                <span class="font-bold" id="repTotalCopies">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+            <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🔄</span> <span data-i18n="report_circulation_summary">Dulmarka Amaahinta</span>
+            </h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Amaahin Guud:</span>
+                <span class="font-bold" id="repTotalLoans">0</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Hadda Gacanta ku jira:</span>
+                <span class="font-bold text-amber-600" id="repActiveLoans">0</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Wakhtigu Dhaafay:</span>
+                <span class="font-bold text-rose-600" id="repOverdueLoans">0</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">La soo Celiyay:</span>
+                <span class="font-bold text-emerald-600" id="repReturnedLoans">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+            <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>💰</span> <span data-i18n="report_financial_summary">Dulmarka Ganaaxyada</span>
+            </h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Wadarta Xubnaha:</span>
+                <span class="font-bold" id="repTotalMembers">0</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Wadarta Ganaaxyada:</span>
+                <span class="font-bold text-rose-600" id="repTotalFines">$0.00</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-slate-500">Lacagta La Qabtay:</span>
+                <span class="font-bold text-emerald-600" id="repCollectedFines">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Popular Books Chart in Reports -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
+          <div class="mb-4">
+            <h3 class="font-bold text-slate-900 dark:text-white" data-i18n="chart_popular_books">Buugaagta Ugu Amaahashada Badan</h3>
+            <p class="text-xs text-slate-400">Buugaagta loogu doonista badan yahay maktabadda</p>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="popularChart"></canvas>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 8: SETTINGS & BACKUP                  -->
+      <!-- ========================================== -->
+      <section id="view-settings" class="view-section hidden space-y-6 max-w-4xl">
+        
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white" data-i18n="settings_title">Hagaajinta & Keydka Xogta</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="settings_subtitle">Hagaaji xeerarka maktabadda, keydso xogta (Backup), ama soo celi</p>
+        </div>
+
+        <!-- Configuration Form -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-6">
+          <h3 class="font-bold text-base text-slate-900 dark:text-white border-b pb-3 border-slate-100 dark:border-slate-700">
+            Xeerarka Amaahinta Maktabadda
+          </h3>
+          
+          <form id="settingsForm" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="setting_library_name">Magaca Maktabadda</label>
+                <input type="text" id="settingLibraryName" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="setting_loan_days">Muddada Amaahinta (Maalmood)</label>
+                <input type="number" id="settingLoanDays" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="setting_max_books_student">Xadka Buugaagta Ardayga</label>
+                <input type="number" id="settingMaxBooks" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="setting_fine_per_day">Ganaaxa Maalinlaha ah ($)</label>
+                <input type="number" step="0.10" id="settingFineRate" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+              </div>
+            </div>
+            <div class="pt-2 flex justify-end">
+              <button type="submit" class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow transition" data-i18n="btn_save_settings">
+                Keydi Hagaajinta
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Backup & Restore Box -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-6">
+          <h3 class="font-bold text-base text-slate-900 dark:text-white border-b pb-3 border-slate-100 dark:border-slate-700" data-i18n="data_management">
+            Maamulka Xogta (Database Backup & Restore)
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+              <div>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Soo Degso Xogta (JSON Backup)</h4>
+                <p class="text-xs text-slate-500 mt-1" data-i18n="backup_desc">Kala soo deg dhammaan buugaagta, xubnaha, iyo amaahda hal fayl ahaan.</p>
+              </div>
+              <button onclick="handleBackupDownload()" class="mt-4 w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow transition flex items-center justify-center space-x-1.5">
+                <span>⬇️</span>
+                <span data-i18n="btn_backup_data">Soo Degso Keydka (JSON)</span>
+              </button>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+              <div>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Dib u Soo Celi Xogta (Restore JSON)</h4>
+                <p class="text-xs text-slate-500 mt-1" data-i18n="restore_desc">Dib u soo celi xog hore looga keydiyay faylka JSON.</p>
+              </div>
+              <label class="mt-4 w-full py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-xs rounded-xl shadow transition cursor-pointer flex items-center justify-center space-x-1.5 text-center">
+                <span>⬆️</span>
+                <span data-i18n="btn_restore_data">Dooro Faylka (JSON)</span>
+                <input type="file" accept=".json" onchange="handleRestoreUpload(event)" class="hidden">
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+            <div>
+              <h5 class="text-xs font-bold text-rose-600">Dib u Celinta Xogtii Hore (Reset)</h5>
+              <p class="text-[11px] text-slate-400">Tirtir dhammaan xogta cusub oo ku noqo xogtii demo-ga asalka ahayd.</p>
+            </div>
+            <button onclick="handleResetDefaults()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-semibold text-xs rounded-xl transition border border-rose-200 dark:border-rose-800">
+              Dib ugu celi Demo Data
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT BOOK                                   -->
+  <!-- ======================================================== -->
+  <div id="bookModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 id="modalBookTitle" class="text-lg font-extrabold text-slate-900 dark:text-white" data-i18n="modal_add_book_title">Kudar Buug Cusub</h3>
+        <button onclick="closeBookModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+      <form id="bookForm" class="mt-4 space-y-4">
+        <input type="hidden" id="bookIdInput">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_title">Magaca Buugga *</label>
+          <input type="text" id="bookTitleInput" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_author">Qoraaga *</label>
+            <input type="text" id="bookAuthorInput" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_isbn">ISBN *</label>
+            <input type="text" id="bookIsbnInput" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono text-slate-900 dark:text-white">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_category">Qaybta *</label>
+            <select id="bookCategoryInput" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+              <option value="Computer Science & IT">Computer Science & IT</option>
+              <option value="Somali History & Literature">Somali History & Literature</option>
+              <option value="Islamic Studies">Islamic Studies</option>
+              <option value="Business & Economics">Business & Economics</option>
+              <option value="Science & Engineering">Science & Engineering</option>
+              <option value="Mathematics & Statistics">Mathematics & Statistics</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_rack">Khaanadda (Rack No) *</label>
+            <input type="text" id="bookRackInput" required placeholder="Tusaale: A-01" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_copies">Koobiyada *</label>
+            <input type="number" id="bookCopiesInput" min="1" value="1" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_year">Sannadka</label>
+            <input type="number" id="bookYearInput" value="2024" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_publisher">Madbacadda</label>
+            <input type="text" id="bookPublisherInput" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_description">Faahfaahinta / Dulmarka</label>
+          <textarea id="bookDescInput" rows="2" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white"></textarea>
+        </div>
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-2">
+          <button type="button" onclick="closeBookModal()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200" data-i18n="btn_cancel">Ka noqo</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-xl bg-primary-600 hover:bg-primary-700 text-white shadow" data-i18n="btn_save_book">Keydi Buugga</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT MEMBER                                 -->
+  <!-- ======================================================== -->
+  <div id="memberModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 id="modalMemberTitle" class="text-lg font-extrabold text-slate-900 dark:text-white" data-i18n="modal_add_member_title">Kudar Xubin Cusub</h3>
+        <button onclick="closeMemberModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+      <form id="memberForm" class="mt-4 space-y-4">
+        <input type="hidden" id="memberIdInput">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_fullname">Magaca Oo Buuxa *</label>
+          <input type="text" id="memberNameInput" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_member_id">ID Card / Lambarka Aqoonsiga</label>
+            <input type="text" id="memberCardInput" placeholder="Tus: LIB-2026-009" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-mono text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_phone">Telefoonka *</label>
+            <input type="text" id="memberPhoneInput" required placeholder="+252 61..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_email">Email-ka</label>
+          <input type="email" id="memberEmailInput" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_member_type">Nooca Xubinta</label>
+            <select id="memberTypeInput" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+              <option value="student">Arday</option>
+              <option value="faculty">Macallin</option>
+              <option value="public">Dadweyne</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_max_books">Xadka Buugaagta</label>
+            <input type="number" id="memberMaxBooksInput" min="1" max="15" value="4" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="form_member_status">Xaaladda</label>
+            <select id="memberStatusInput" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+              <option value="active">Active (Waa shaqeynayaa)</option>
+              <option value="suspended">Suspended (Hakad)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-2">
+          <button type="button" onclick="closeMemberModal()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200" data-i18n="btn_cancel">Ka noqo</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-xl bg-primary-600 hover:bg-primary-700 text-white shadow" data-i18n="btn_save_member">Keydi Xubinta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ISSUE BOOK (AMAANI BUUG)                           -->
+  <!-- ======================================================== -->
+  <div id="issueBookModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" data-i18n="modal_issue_title">Amaahi Buug Xubin</h3>
+        <button onclick="closeIssueModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+      <form id="issueBookForm" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="select_book">Dooro Buugga *</label>
+          <select id="issueBookSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="select_member">Dooro Xubinta / Ardayga *</label>
+          <select id="issueMemberSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="due_date">Taariikhda Soo Celinta (Due Date) *</label>
+          <input type="date" id="issueDueDate" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="loan_notes">Faallo / Xusuusin</label>
+          <input type="text" id="issueNotes" placeholder="Tus: Xaalad wanaagsan" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-2">
+          <button type="button" onclick="closeIssueModal()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200" data-i18n="btn_cancel">Ka noqo</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-xl bg-primary-600 hover:bg-primary-700 text-white shadow" data-i18n="btn_confirm_issue">Xaqiiji Amaahinta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: RETURN BOOK (SOO CELINTA BUUGGA & GANAAXA)        -->
+  <!-- ======================================================== -->
+  <div id="returnBookModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" data-i18n="modal_return_title">Soo Celinta Buugga</h3>
+        <button onclick="closeReturnModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      </div>
+      
+      <div class="mt-4 space-y-3 text-sm">
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-slate-500" data-i18n="book_returned_label">Buugga:</span>
+            <span id="returnBookTitle" class="font-bold text-slate-800 dark:text-slate-200 text-right"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500" data-i18n="member_returned_label">Xubinta:</span>
+            <span id="returnMemberName" class="font-medium text-slate-800 dark:text-slate-200"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Taariikhdii La Qaatay:</span>
+            <span id="returnIssueDate" class="font-mono text-xs text-slate-600"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Taariikhdii Soo Celinta:</span>
+            <span id="returnDueDate" class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200"></span>
+          </div>
+          <div id="returnOverdueRow" class="hidden flex justify-between text-rose-600 font-bold border-t pt-2 border-slate-200 dark:border-slate-700">
+            <span data-i18n="overdue_days_label">Dib u dhaca:</span>
+            <span id="returnOverdueDays"></span>
+          </div>
+          <div id="returnFineRow" class="hidden flex justify-between text-rose-600 font-extrabold text-base">
+            <span data-i18n="calculated_fine_label">Ganaaxa:</span>
+            <span id="returnFineAmount"></span>
+          </div>
+        </div>
+
+        <div id="returnFineActions" class="hidden space-y-2 pt-2">
+          <p class="text-xs font-semibold text-slate-700 dark:text-slate-300" data-i18n="fine_payment_status">Xaaladda Lacag-bixinta Ganaaxa:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="confirmReturnBook('pay')" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition text-center" id="btnFinePayNowText">
+              Hadda Bixi
+            </button>
+            <button onclick="confirmReturnBook('defer')" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition text-center" data-i18n="fine_pay_later">
+              Dib u dhig
+            </button>
+          </div>
+          <button onclick="confirmReturnBook('waive')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 py-1" data-i18n="fine_waive">
+            Ka Cafi Ganaaxa (Waive Fine)
+          </button>
+        </div>
+
+        <div id="returnNormalAction" class="pt-3">
+          <button onclick="confirmReturnBook('none')" class="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm rounded-xl shadow transition" data-i18n="btn_confirm_return">
+            Xaqiiji Soo Celinta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: PATRON MEMBER CARD PREVIEW & PRINT                -->
+  <!-- ======================================================== -->
+  <div id="memberCardModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-center">
+      <div class="w-full flex justify-between items-center pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white" data-i18n="member_card_title">Kaarka Xubinnimada Maktabadda</h3>
+        <button onclick="closeMemberCardModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Realistic Plastic ID Card -->
+      <div class="patron-card rounded-2xl p-5 text-white flex flex-col justify-between my-2">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="text-[10px] tracking-widest text-primary-300 font-bold uppercase" id="cardLibraryTitle">MAKTABADDA GUUD EE QARANKA</div>
+            <div class="text-xs font-semibold text-white/80">LIBRARY PATRON CARD</div>
+          </div>
+          <div class="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center text-primary-300 font-bold text-xs">
+            MP
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs text-white/60 uppercase text-[9px] tracking-wider" data-i18n="member_card_name">MAGACA XUBINTA</div>
+          <div class="text-base font-extrabold tracking-wide text-white" id="cardMemberName">Cabdiraxmaan Cali</div>
+          <div class="flex items-center space-x-2 mt-1 text-xs">
+            <span class="text-primary-300 font-mono font-bold" id="cardMemberId">LIB-2026-001</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white uppercase" id="cardMemberType">STUDENT</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/30 text-emerald-300 uppercase" id="cardMemberStatus">ACTIVE</span>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-white/10 flex justify-between items-end text-[10px] text-white/70">
+          <div>
+            <div><span>Tel: </span><span id="cardMemberPhone" class="font-mono"></span></div>
+            <div><span>Valid: </span><span id="cardMemberDate" class="font-mono"></span></div>
+          </div>
+          <div class="font-mono tracking-widest text-white/90">
+            ||| | |||| | ||| ||||
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex space-x-3 w-full">
+        <button onclick="window.print()" class="flex-1 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs rounded-xl shadow transition" data-i18n="btn_print_card">
+          🖨️ Daabac Kaarka (Print)
+        </button>
+        <button onclick="closeMemberCardModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl transition" data-i18n="btn_cancel">
+          Ka noqo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: OFFICIAL RECEIPT                                  -->
+  <!-- ======================================================== -->
+  <div id="receiptModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-center">
+      
+      <!-- Receipt Paper -->
+      <div class="receipt-paper p-6 rounded-lg w-full text-xs">
+        <div class="text-center pb-3 border-b border-dashed border-slate-300">
+          <h2 class="font-extrabold text-sm uppercase" id="recLibraryName">MAKTABADDA GUUD</h2>
+          <p class="text-[10px] text-slate-500 mt-0.5">NIDAAMKA MAAMULKA MAKTABADDA</p>
+          <div class="mt-2 text-[11px] font-mono">
+            <span data-i18n="receipt_no">Rasiidh No: </span><span class="font-bold" id="recNumber"></span>
+          </div>
+          <div class="text-[10px] text-slate-500">
+            <span data-i18n="receipt_date">Taariikhda: </span><span id="recDate"></span>
+          </div>
+        </div>
+
+        <div class="py-4 space-y-2 border-b border-dashed border-slate-300">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Xubinta:</span>
+            <span class="font-bold" id="recPatronName"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Buugga:</span>
+            <span class="font-semibold text-right max-w-[180px] truncate" id="recBookTitle"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Due Date:</span>
+            <span class="font-mono" id="recDueDate"></span>
+          </div>
+          <div id="recFineContainer" class="hidden flex justify-between font-bold text-sm pt-2 border-t border-slate-200">
+            <span>Lacagta Ganaaxa:</span>
+            <span id="recFineAmount" class="text-emerald-700 font-extrabold">$0.00</span>
+          </div>
+        </div>
+
+        <div class="pt-4 text-center text-[10px] text-slate-500">
+          <p data-i18n="receipt_thanks">Waad ku mahadsan tahay isticmaalka Maktabadda!</p>
+          <div class="mt-2 font-mono tracking-widest text-slate-700 text-xs">
+            *|| |||| | ||| |||| |*
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 flex space-x-3 w-full">
+        <button onclick="printReceipt()" class="flex-1 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs rounded-xl shadow transition" data-i18n="btn_print">
+          🖨️ Daabac (Print)
+        </button>
+        <button onclick="closeReceiptModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl transition" data-i18n="btn_cancel">
+          Xir
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: NEW RESERVATION                                   -->
+  <!-- ======================================================== -->
+  <div id="reservationModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-850 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" data-i18n="new_reservation_btn">Qabso Buug Cusub</h3>
+        <button onclick="closeReservationModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+      </div>
+      <form id="reservationForm" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="select_book">Dooro Buugga *</label>
+          <select id="resBookSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-i18n="select_member">Dooro Xubinta *</label>
+          <select id="resMemberSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Xusuusin</label>
+          <input type="text" id="resNotes" placeholder="Faallo..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+        </div>
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-2">
+          <button type="button" onclick="closeReservationModal()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" data-i18n="btn_cancel">Ka noqo</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-xl bg-primary-600 hover:bg-primary-700 text-white shadow">Xaqiiji Boos-qabsashada</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="notificationToastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Core Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/circulation.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
